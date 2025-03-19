@@ -103,9 +103,16 @@ const Photobooth = () => {
         )}
 
         {!isCapturing && photos.length > 0 && (
-          <div ref={stripRef} className="md:w-2/3 bg-white rounded-lg p-4 shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-center">📷 Photo Strip</h2>
-            <PhotoStrip photos={photos} bgColor={bgColor} />
+          <div className="md:w-2/3 flex flex-col items-center">
+            <div
+              ref={stripRef}
+              className="bg-white rounded-lg p-4 shadow-md w-full"
+              style={{ backgroundColor: bgColor }}
+            >
+              <h2 className="text-xl font-semibold mb-4 text-center">📷 Photo Strip</h2>
+              <PhotoStrip photos={photos} bgColor={bgColor} />
+            </div>
+
             <div className="flex justify-center mt-6 gap-4">
               <button
                 onClick={restartPhotobooth}
