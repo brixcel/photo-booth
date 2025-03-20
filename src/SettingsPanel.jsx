@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 
-const colorPresets = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#000000', '#ffffff'];
+// Updated color presets with light pink added
+const colorPresets = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#000000', '#ffffff', '#ffb6c1'];
 
 const SettingsPanel = ({ onStart }) => {
   const [numPhotos, setNumPhotos] = useState(1);
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [theme, setTheme] = useState('attack-on-titan');
 
   const handleConfirm = () => {
-    onStart(numPhotos, bgColor);
+    onStart(numPhotos, bgColor, theme);
   };
 
   return (
@@ -21,7 +23,7 @@ const SettingsPanel = ({ onStart }) => {
         onChange={(e) => setNumPhotos(Number(e.target.value))}
         className="w-full p-2 border rounded mb-4"
       />
-
+      
       <label className="block mb-2 font-semibold">Select Background Color:</label>
       <div className="flex flex-wrap gap-2 mb-4">
         {colorPresets.map((color) => (
@@ -33,7 +35,7 @@ const SettingsPanel = ({ onStart }) => {
           />
         ))}
       </div>
-
+      
       <label className="block mb-1">Or pick your own color:</label>
       <input
         type="color"
@@ -41,16 +43,25 @@ const SettingsPanel = ({ onStart }) => {
         onChange={(e) => setBgColor(e.target.value)}
         className="w-full h-10 border rounded mb-4"
       />
-
+      
+      <label className="block mb-2 font-semibold">Select Theme:</label>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <button
+          onClick={() => setTheme('attack-on-titan')}
+          className="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300 border"
+        >
+          Attack on Titan
+        </button>
+      </div>
+      
       <button
         onClick={handleConfirm}
         className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
       >
-        Confirm 
+        Confirm
       </button>
     </div>
   );
 };
 
 export default SettingsPanel;
-
