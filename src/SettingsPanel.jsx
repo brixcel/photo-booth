@@ -1,65 +1,130 @@
-import React, { useState } from 'react';
+import { PHOTO_COUNTS, COLOR_PRESETS, STICKER_SETS } from './config/layouts';
+import LayoutSelector from './components/LayoutSelector';
 
-// Updated color presets with light pink added
-const colorPresets = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#000000', '#ffffff', '#ffb6c1'];
-
-const SettingsPanel = ({ onStart }) => {
-  const [numPhotos, setNumPhotos] = useState(1);
-  const [bgColor, setBgColor] = useState('#ffffff');
-  const [theme, setTheme] = useState('attack-on-titan');
-
-  const handleConfirm = () => {
-    onStart(numPhotos, bgColor, theme);
-  };
-
+const SettingsPanel = ({
+  photoCount,
+  onPhotoCountChange,
+  selectedLayout,
+  onLayoutChange,
+  bgColor,
+  onBgColorChange,
+  stickerSet,
+  onStickerSetChange,
+  watermarkText,
+  onWatermarkTextChange,
+}) => {
   return (
-    <div className="p-4 bg-gray-100 rounded shadow-md w-full max-w-md mx-auto">
-      <label className="block mb-2 font-semibold">Number of Photos (1–6):</label>
-      <input
-        type="number"
-        min="1"
-        max="6"
-        value={numPhotos}
-        onChange={(e) => setNumPhotos(Number(e.target.value))}
-        className="w-full p-2 border rounded mb-4"
-      />
-      
-      <label className="block mb-2 font-semibold">Select Background Color:</label>
-      <div className="flex flex-wrap gap-2 mb-4">
-        {colorPresets.map((color) => (
-          <button
-            key={color}
-            onClick={() => setBgColor(color)}
-            className="w-8 h-8 rounded-full border"
-            style={{ backgroundColor: color }}
+    <div className="bg-white/90 backdrop-blur-sm border border-ink/10 rounded-2xl p-5 shadow-sm space-y-6">
+      {/* 1. Photo Count Selection */}
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-ink/70 mb-2.5">
+          1. Number of Photos
+        </label>
+        <div className="grid grid-cols-4 gap-1.5">
+          {PHOTO_COUNTS.map((count) => {
+            const isSelected = photoCount === count;
+            return (
+              <button
+                key={count}
+                type="button"
+                onClick={() => onPhotoCountChange(count)}
+                className={`py-2 text-center rounded-xl font-display font-semibold text-sm transition-all ${
+                  isSelected
+                    ? 'bg-curtain text-white shadow-sm ring-2 ring-curtain/30 scale-[1.02]'
+                    : 'bg-paper text-ink/80 hover:bg-ink/5 border border-ink/5'
+                }`}
+              >
+                {count} {count === 1 ? 'Pic' : 'Pics'}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 2. Visual Layout Selector */}
+      <div>
+        <LayoutSelector
+          photoCount={photoCount}
+          selectedLayoutId={selectedLayout?.id}
+          onSelectLayout={onLayoutChange}
+        />
+      </div>
+
+      {/* 3. Strip Color Selection */}
+      <div>
+        <div className="flex items-center justify-between mb-2.5">
+          <label className="text-xs font-semibold uppercase tracking-wider text-ink/70">
+            2. Strip Color
+          </label>
+          <span className="text-[11px] font-mono text-ink/50 uppercase">{bgColor}</span>
+        </div>
+        
+        <div className="grid grid-cols-5 gap-2 mb-3">
+          {COLOR_PRESETS.map((color) => (
+            <button
+              key={color.value}
+              type="button"
+              onClick={() => onBgColorChange(color.value)}
+              className={`w-9 h-9 rounded-full border-2 transition-transform ${
+                bgColor === color.value
+                  ? 'border-curtain scale-110 shadow-md ring-2 ring-curtain/30'
+                  : 'border-ink/10 hover:scale-105'
+              }`}
+              style={{ backgroundColor: color.value }}
+              title={color.label}
+              aria-label={`Select ${color.label}`}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={bgColor.startsWith('#') && bgColor.length === 7 ? bgColor : '#ffffff'}
+            onChange={(e) => onBgColorChange(e.target.value)}
+            className="w-8 h-8 rounded-lg border border-ink/10 cursor-pointer p-0.5"
+            title="Custom color picker"
           />
-        ))}
+          <span className="text-xs text-ink/60">Custom color picker</span>
+        </div>
       </div>
-      
-      <label className="block mb-1">Or pick your own color:</label>
-      <input
-        type="color"
-        value={bgColor}
-        onChange={(e) => setBgColor(e.target.value)}
-        className="w-full h-10 border rounded mb-4"
-      />
-      
-      <label className="block mb-2 font-semibold">Select Theme:</label>
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button
-          onClick={() => setTheme('attack-on-titan')}
-          className="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300 border"
-        >
-          Attack on Titan
-        </button>
+
+      {/* 4. Sticker Pack Selection */}
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-ink/70 mb-2">
+          3. Sticker Pack
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {STICKER_SETS.map((pack) => (
+            <button
+              key={pack.id}
+              type="button"
+              onClick={() => onStickerSetChange(pack.id)}
+              className={`px-3.5 py-1.5 rounded-full border text-xs font-medium transition ${
+                stickerSet === pack.id
+                  ? 'border-curtain bg-curtain/10 text-curtain font-semibold'
+                  : 'border-ink/15 text-ink/70 hover:border-ink/30 bg-white'
+              }`}
+            >
+              {pack.name}
+            </button>
+          ))}
+        </div>
       </div>
-      
-      <button
-        onClick={handleConfirm}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-      >
-        Confirm
-      </button>
+
+      {/* 5. Custom Date / Watermark Footer */}
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-ink/70 mb-2">
+          4. Strip Caption / Date
+        </label>
+        <input
+          type="text"
+          value={watermarkText}
+          onChange={(e) => onWatermarkTextChange(e.target.value)}
+          placeholder={new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          className="w-full px-3 py-2 bg-paper/50 border border-ink/15 rounded-lg text-xs text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-curtain/30 focus:border-curtain"
+        />
+      </div>
     </div>
   );
 };

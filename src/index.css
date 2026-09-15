@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans;
+  }
+}
+
+@layer utilities {
+  .marquee-lights {
+    background-image: radial-gradient(circle, #e8b23d 2.5px, transparent 2.5px);
+    background-size: 22px 22px;
+    background-position: 11px center;
+  }
+
+  .film-sprockets {
+    background-image: repeating-linear-gradient(
+      180deg,
+      #fff7ef 0px,
+      #fff7ef 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+}
